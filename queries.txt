@@ -1,0 +1,114 @@
+# MFLIX #
+1. Count how many movies there are
+db.movies.find().count()
+
+2. Count how many movies there are released before the year 2000
+db.movies.find({
+    'released': {
+        '$lt':ISODate('2000-01-01')
+    }
+}, {
+    'title':1,
+    'released':1
+}).count()
+
+///
+
+db.movies.find({
+    'year':{
+        '$lt':2000
+    }
+}).count()
+
+3. Show the first ten titles of movies produced in the USA
+db.movies.find({
+    'countries':{
+        '$in':['USA']
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+
+4. Show the first ten titles of movies not produced in the USA
+db.movies.find({
+    'countries':{
+        '$not':{
+            '$in':['USA']
+        }
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+
+///
+
+db.movies.find({
+    'countries':{
+        '$nin':['USA']
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+
+5. Show movies that have at least 3 wins in the awards object
+db.movies.find({
+    'awards.wins':{
+        '$gte':3
+    }
+}, {
+    'title':1,
+    'awards.wins':1
+}).pretty()
+
+6. Show movies that have at least 3 nominations in the awards object
+db.movies.find({
+    'awards.nominations':{
+        '$gte':3
+    }
+}, {
+    'title':1,
+    'awards.nominations':1
+}).pretty()
+
+7. Show movies that cast Tom Cruise
+db.movies.find({
+    'cast':{
+        '$in':['Tom Cruise']
+    }
+}, {
+    'title':1,
+    'cast':1
+}).pretty()
+
+8. Show movies that are directed by Charles Chaplin
+db.movies.find({
+    'directors':{
+        '$in':['Charles Chaplin']
+    }
+}, {
+    'title':1,
+    'directors':1
+}).pretty()
+
+
+# WEATHER #
+1. Count how many records there are of wind speed with rate higher than 5
+db.data.find({
+    'wind.speed.rate':{
+        '$gt':5
+    }
+}).count()
+
+2. Count how many records there are of wind speed with rate higher than 5 but is not 999.9
+db.data.find({
+    'wind.speed.rate':{
+        '$gt':5,
+        '$ne':999.9
+    }
+}).count()
+
+
+# SUPPLIES #

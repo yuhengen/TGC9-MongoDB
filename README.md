@@ -1,45 +1,240 @@
-<img src="https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png" style="margin: 0;">
+# RESTAURANT
+## Find all restaurants that specialize in hamburgers cuisine
+```
+db.restaurants.find({
+    'cuisine': 'Hamburgers'
+}, {
+    'name':1,
+    'borough':1,
+    'cuisine':1
+}).pretty()
+```
 
-Welcome USER_NAME,
+## Find all restaurants that specialize in American cuisine and are in the Bronx borough
+```
+db.restaurants.find({
+    'cuisine':'American',
+    'borough':'Bronx'
+}, {
+    'name':1,
+    'borough':1,
+    'cuisine':1
+}).pretty()
+```
 
-This is the Code Institute student template for Gitpod. We have preinstalled all of the tools you need to get started. You can safely delete this README.md file, or change it for your own project. Please do read it at least once, though! It contains some important information about Gitpod and the extensions we use.
+## Find all restaurants that are located at the street "Stillwell Avenue"
+```
+db.restaurants.find({
+    'address.street':'Stillwell Avenue'
+}, {
+    'name':1,
+    'borough':1,
+    'cuisine':1,
+    'address.street':1
+}).pretty()
+```
 
-## Gitpod Reminders
+# MFLIX
+## Count how many movies there are
+```
+db.movies.find().count()
+```
 
-To run a frontend (HTML, CSS, Javascript only) application in Gitpod, in the terminal, type:
+## Count how many movies there are released before the year 2000
+```
+db.movies.find({
+    'released': {
+        '$lt':ISODate('2000-01-01')
+    }
+}, {
+    'title':1,
+    'released':1
+}).count()
+```
+```
+db.movies.find({
+    'year':{
+        '$lt':2000
+    }
+}).count()
+```
 
-`python3 -m http.server`
+## Show the first ten titles of movies produced in the USA
+```
+db.movies.find({
+    'countries':{
+        '$in':['USA']
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+```
 
-A blue button should appear to click: *Make Public*,
+## Show the first ten titles of movies not produced in the USA
+```
+db.movies.find({
+    'countries':{
+        '$not':{
+            '$in':['USA']
+        }
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+```
+```
+db.movies.find({
+    'countries':{
+        '$nin':['USA']
+    }
+}, {
+    'title':1,
+    'countries':1
+}).pretty().limit(10)
+```
 
-Another blue button should appear to click: *Open Browser*.
+## Show movies that have at least 3 wins in the awards object
+```
+db.movies.find({
+    'awards.wins':{
+        '$gte':3
+    }
+}, {
+    'title':1,
+    'awards.wins':1
+}).pretty()
+```
 
-To run a backend Python file, type `python3 app.py`, if your Python file is named `app.py` of course.
+## Show movies that have at least 3 nominations in the awards object
+```
+db.movies.find({
+    'awards.nominations':{
+        '$gte':3
+    }
+}, {
+    'title':1,
+    'awards.nominations':1
+}).pretty()
+```
 
-A blue button should appear to click: *Make Public*,
+## Show movies that cast Tom Cruise
+```
+db.movies.find({
+    'cast':{
+        '$in':['Tom Cruise']
+    }
+}, {
+    'title':1,
+    'cast':1
+}).pretty()
+```
 
-Another blue button should appear to click: *Open Browser*.
+## Show movies that are directed by Charles Chaplin
+```
+db.movies.find({
+    'directors':{
+        '$in':['Charles Chaplin']
+    }
+}, {
+    'title':1,
+    'directors':1
+}).pretty()
+```
 
-In Gitpod you have superuser security privileges by default. Therefore you do not need to use the `sudo` (superuser do) command in the bash terminal in any of the lessons.
+## Pattern matching (Same as LIKE in SQL)
+Find all movies that have `Star Wars` (regardless of casing) in it
 
-## Updates Since The Instructional Video
+```
+db.movies.find({
+    'title':{
+        '$regex':"Star Wars",
+        '$options':'i'
+    }
+}, {
+    'title':1
+}).pretty()
+```
 
-We continually tweak and adjust this template to help give you the best experience. Here is the version history:
+## Doing Logical OR
+Find movies directed by Steven Spielburg and before year 1999 or directed by Charles Chaplin
 
-**October 21 2020:** Versions of the HTMLHint, Prettier, Bootstrap4 CDN and Auto Close extensions updated. The Python extension needs to stay the same version for now.
+```
+db.movies.find({
+    '$or':[
+        {
+            'directors':'Steven Spielberg',
+            'year': {
+                '$lt':1999
+            }
+        },
+        {
+            'directors':'Charles Chaplin'
+        }
+    ]
+},{
+    'title':1,
+    'directors':1,
+    'year':1
+}).pretty()
+```
 
-**October 08 2020:** Additional large Gitpod files (`core.mongo*` and `core.python*`) are now hidden in the Explorer, and have been added to the `.gitignore` by default.
+# WEATHER
+## Count how many records there are of wind speed with rate higher than 5
+```
+db.data.find({
+    'wind.speed.rate':{
+        '$gt':5
+    }
+}).count()
+```
 
-**September 22 2020:** Gitpod occasionally creates large `core.Microsoft` files. These are now hidden in the Explorer. A `.gitignore` file has been created to make sure these files will not be committed, along with other common files.
+## Count how many records there are of wind speed with rate higher than 5 but is not 999.9
+```
+db.data.find({
+    'wind.speed.rate':{
+        '$gt':5,
+        '$ne':999.9
+    }
+}).count()
+```
+# Design Swimming coach App
+## Allows parent to book a slot for a coach
 
-**April 16 2020:** The template now automatically installs MySQL instead of relying on the Gitpod MySQL image. The message about a Python linter not being installed has been dealt with, and the set-up files are now hidden in the Gitpod file explorer.
+**Sessions**
+* available slots
+    * venue
+        * address
+            * street
+            * building name
+            * postal code
+    * coach
+        * first name
+        * last name
+        * gender
+        * awards
+    * date and time
 
-**April 13 2020:** Added the _Prettier_ code beautifier extension instead of the code formatter built-in to Gitpod.
+**Bookings**
+* each bookings
 
-**February 2020:** The initialisation files now _do not_ auto-delete. They will remain in your project. You can safely ignore them. They just make sure that your workspace is configured correctly each time you open it. It will also prevent the Gitpod configuration popup from appearing.
+db.students.insertMany([
+    {
+    'name':'Jane Doe',
+    'age':13,
+    'subjects':'Defense Against the Dark Arts','Charms','History of Magic',
+    'date_enrolled': ISODate('2016-05-13')
+    },{
+    'name':'James Verses',
+    'age':14,
+    'subjects':'Transfiguration','Alchemy',
+    'date_enrolled': ISODate('2015-06-15')
+    },{
+    'name':'Jonathan Goh',
+    'age':12,
+    'subjects':'Divination','Study of Ancient Runes',
+    'date_enrolled': ISODate('2017-04-16')
+    }
 
-**December 2019:** Added Eventyret's Bootstrap 4 extension. Type `!bscdn` in a HTML file to add the Bootstrap boilerplate. Check out the <a href="https://github.com/Eventyret/vscode-bcdn" target="_blank">README.md file at the official repo</a> for more options.
-
---------
-
-Happy coding!
+])
